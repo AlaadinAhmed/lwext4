@@ -46,6 +46,16 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+#include <stddef.h> // Required for size_t
+
+#if CONFIG_USE_USER_MALLOC
+extern void *ext4_user_malloc(size_t size);
+extern void *ext4_user_calloc(size_t nmemb, size_t size);
+extern void *ext4_user_realloc(void *ptr, size_t size);
+extern void ext4_user_free(void *ptr);
+#endif
+
 #include <ext4_config.h>
 #include <ext4_blockdev.h>
 #include <misc/tree.h>

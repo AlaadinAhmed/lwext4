@@ -53,6 +53,7 @@
 #include <ext4_xattr.h>
 #include <ext4_journal.h>
 
+extern void kprintf(const char* format, ...);
 
 #include <stdlib.h>
 #include <string.h>
@@ -3201,6 +3202,14 @@ const ext4_direntry *ext4_dir_entry_next(ext4_dir *dir)
 
 	r = ext4_dir_iterator_init(&it, &dir_inode, dir->next_off);
 	if (r != EOK) {
+        kprintf("Iterator init failed: %d\n", r);
+		ext4_fs_put_inode_ref(&dir_inode);
+		goto Finish;
+	}
+
+	if (!it.curr) {
+		dir->next_off = EXT4_DIR_ENTRY_OFFSET_TERM;
+		ext4_dir_iterator_fini(&it);
 		ext4_fs_put_inode_ref(&dir_inode);
 		goto Finish;
 	}
